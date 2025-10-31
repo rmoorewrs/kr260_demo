@@ -10,22 +10,15 @@ if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<instal
 export SUB_PROJECT_NAME=${PROJECT_NAME}_r5
 export PATCH_FILE=${SUB_PROJECT_NAME}_dts.patch
 export BSP_NAME=${BSP_NAME_R5}
-
-# set current directory as workspace
-export MY_WS_DIR=$(pwd)/ws
-
-# set project names
-export VSB_NAME=${SUB_PROJECT_NAME}-vsb
-export VIP_NAME=${SUB_PROJECT_NAME}-vip
-
+export DTS_FILE=${DTS_FILE_R5}
 
 # set 'build' as project workspace
 mkdir -p build
 export MY_WS_DIR=$(pwd)/build
 
 # set project names
-export VSB_NAME=${PROJECT_NAME}-vsb
-export VIP_NAME=${PROJECT_NAME}-vip
+export VSB_NAME=${SUB_PROJECT_NAME}-vsb
+export VIP_NAME=${SUB_PROJECT_NAME}-vip
 
 generate_patch_file()
 {
@@ -56,11 +49,14 @@ EOF
 
 }
 
+# cd into the workspace directory
+cd ${MY_WS_DIR}
+echo $pwd
+
 # build the VSB
 vxprj vsb create -force -ilp32 -bsp $BSP_NAME -force -S $VSB_NAME
 cd $VSB_NAME
 vxprj vsb build -j
-
 
 # create, configure and build VIP
 cd $MY_WS_DIR
@@ -83,6 +79,7 @@ vxprj vip build
 
 cd $MY_WS_DIR
 
-echo Done. Remember to copy this to your tftpboot directory
-echo cp zynqmp_r5-vip/default/vxWorks.bin /tftpboot/vxWorks_r5.bin
+echo Done. Remember to copy the output to your tftpboot directory
+echo cp ${PROJECT_NAME}/default/vxWorks.bin /tftpboot/vxWorks_r5.bin
+echo - or edit the deploy_output line in '.wrmakefile' to copy it automatically
 

@@ -7,24 +7,18 @@ source $(pwd)/project_params.sh
 if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<install_dir\>/wrenv.sh -p vxworks/${VXWORKS_VERSION} first";return -1; else echo "VxWorks Release $WIND_RELEASE_ID detected"; fi
 
 
-export SUB_PROJECT_NAME=${PROJECT_NAME}_r5_eth
+export SUB_PROJECT_NAME=${PROJECT_NAME}_r5
 export PATCH_FILE=${SUB_PROJECT_NAME}_dts.patch
 export BSP_NAME=${BSP_NAME_R5}
+export DTS_FILE=${DTS_FILE_R5}
 
-# set current directory as workspace
-export MY_WS_DIR=$(pwd)/ws
+# set 'build' as project workspace
+mkdir -p build
+export MY_WS_DIR=$(pwd)/build
 
 # set project names
 export VSB_NAME=${SUB_PROJECT_NAME}-vsb
-export VIP_NAME=${SUB_PROJECT_NAME}-vip
-
-
-# set current directory as workspace
-export MY_WS_DIR=$(pwd)
-
-# set project names
-export VSB_NAME=${PROJECT_NAME}-vsb
-export VIP_NAME=${PROJECT_NAME}-vip
+export VIP_NAME=${SUB_PROJECT_NAME}_eth-vip
 
 generate_patch_file()
 {
@@ -59,6 +53,10 @@ EOF
 #vxprj vsb create -force -ilp32 -bsp $BSP_NAME -force -S $VSB_NAME
 #cd $VSB_NAME
 #vxprj vsb build -j
+
+# cd into the workspace directory
+cd ${MY_WS_DIR}
+echo $pwd
 
 
 # create, configure and build VIP
