@@ -42,7 +42,7 @@ cat << EOF > $1
      chosen
          {
 -        bootargs = "gem(0,0)host:vxWorks h=192.168.1.1 e=192.168.1.6:ffffff00 g=192.168.1.1 u=a pw=a";
-+        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${DEV_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=a pw=a";
++        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${TARGET_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=a pw=a";
          stdout-path = "serial0";
          };
 EOF

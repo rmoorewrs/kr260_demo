@@ -42,7 +42,7 @@ cat << EOF > $1
      chosen
          {
 -        bootargs = "gem(0,0)host:vxWorks h=192.168.1.1 e=192.168.1.6:ffffff00 g=192.168.1.1 u=a pw=a";
-+        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${DEV_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=a pw=a";
++        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${TARGET_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=a pw=a";
          stdout-path = "serial0";
          };
 EOF
@@ -69,7 +69,7 @@ vxprj vip component add $VIP_NAME INCLUDE_STANDALONE_DTB
 vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT_START
 vxprj vip component add $VIP_NAME INCLUDE_IPWRAP_IFCONFIG
 vxprj vip component add $VIP_NAME INCLUDE_IFCONFIG
-vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet '"${DEV_IP}"'/'"${NETMASKCIDR}"'","gateway '"${GATEWAY_IP}"'"'
+vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet '"${TARGET_IP}"'/'"${NETMASKCIDR}"'","gateway '"${GATEWAY_IP}"'"'
 vxprj vip component add $VIP_NAME INCLUDE_PING
 vxprj vip component add $VIP_NAME INCLUDE_IPPING_CMD
 vxprj vip component add $VIP_NAME INCLUDE_IPTELNETS

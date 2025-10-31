@@ -18,7 +18,8 @@ setenv serverip 192.168.12.51
 # tftpboot 0x100000 vxWorks_a53.bin; go 0x100000
 
 # uncomment for booting on both A53 and R5 cores
-tftpboot 0x100000 vxWorks_a53.bin
-tftpboot 0x78100000 vxWorks_r5.bin
-zynqmp tcminit split; cpu 4 release 78100000 split; go 100000
+# tftpboot 0x100000 vxWorks_a53.bin
+# tftpboot 0x78100000 vxWorks_r5.bin
+# zynqmp tcminit split; cpu 4 release 78100000 split; go 100000
+exit
 
