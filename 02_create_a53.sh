@@ -11,14 +11,97 @@ export SUB_PROJECT_NAME=${PROJECT_NAME}_a53
 export PATCH_FILE=${SUB_PROJECT_NAME}_dts.patch
 export BSP_NAME=${BSP_NAME_A53}
 
-# set current directory as workspace
-export MY_WS_DIR=$(pwd)/ws
+# set 'build' as project workspace
+mkdir -p build
+export MY_WS_DIR=$(pwd)/build
 
 # set project names
 export VSB_NAME=${SUB_PROJECT_NAME}-vsb
 export VIP_NAME=${SUB_PROJECT_NAME}-vip
 
 generate_patch_file()
+{
+
+cat << EOF > $1
+--- ${DTS_FILE}
++++ /data/temp/kr260_demo/build/kr260_a53-vip/amd_zynqmp_3_0_1_2/amd-zcu102-rev-1.1.dts
+@@ -17,25 +17,32 @@
+ #include "zynqmp.dtsi"
+ 
+ /   {
+-    model = "AMD ZCU102";
++    model = "AMD KR260";
+ 
+     aliases
+         {
+-        serial0 = &uart0;
+-        ethernet3 = &gem3;
++        serial0 = &uart1;
++        ethernet0 = &gem0;
+         };
+ 
+     memory@0
+         {
+         device_type = "memory";
+-        reg = <0x0 0x00000000 0x0 0x80000000>,
++        reg = <0x0 0x00000000 0x0 0x76000000>,
+               <0x8 0x00000000 0x0 0x80000000>;
+         };
+ 
++    generic_dev@0x76000000
++        {
++        compatible = "fdt,generic-dev";
++        reg = <0x0 0x76000000 0x0 0x02000000>;
++        status = "okay";
++        };
++
+     chosen
+         {
+-        bootargs = "gem(0,0)host:vxWorks h=192.168.1.2 e=192.168.1.6:ffffff00 g=192.168.1.1 u=target pw=vxTarget";
+-        stdout-path = "serial0";
++        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${TARGET_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=target pw=vxTarget";
++        stdout-path = "serial0";
+         };
+     };
+ 
+@@ -45,7 +52,7 @@
+     clock-frequency = <33330000>;
+     };
+ 
+-&uart0
++&uart1
+     {
+     status = "okay";
+     };
+@@ -61,16 +68,16 @@
+     status = "okay";
+     };
+ 
+-&gem3
+-    {
+-    status = "okay";
+-    phy-handle = <&phy3>;
+-
+-    phy3: ethernet-phy@c
++&gem1
++    {
++    status = "okay";
++    phy-handle = <&phy1>;
++
++    phy1: ethernet-phy@c
+         {
+         compatible = "tiDpPhy";
+ 
+-        reg = <0x0c>;
++        reg = <0x08>;
+         rgmii-delay = <0x3>;
+         rx-internal-delay = <0x8>;
+         tx-internal-delay = <0xa>;
+EOF
+
+}
+
+generate_patch_file_old()
 {
 
 cat << EOF > $1

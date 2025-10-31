@@ -19,8 +19,9 @@ export VSB_NAME=${SUB_PROJECT_NAME}-vsb
 export VIP_NAME=${SUB_PROJECT_NAME}-vip
 
 
-# set current directory as workspace
-export MY_WS_DIR=$(pwd)
+# set 'build' as project workspace
+mkdir -p build
+export MY_WS_DIR=$(pwd)/build
 
 # set project names
 export VSB_NAME=${PROJECT_NAME}-vsb
