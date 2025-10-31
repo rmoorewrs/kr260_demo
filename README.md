@@ -9,29 +9,23 @@ vxworks demo script for AMD Kria KR260 Starter Kit
 - tftp server
 - this git repo
 
-
-
-
-Note: to customize the IP addresses for your target and tftp server, edit the bootarg lines in the `generate_patch_file()` functions inside of the two create scripts
-
 ## Instructions:
 
-### 1) Clone this project and enter worksapce
+### 1) Clone this project and enter the project directory
 
 ```
 git clone https://github.com/rmoorewrs/kr260_demo.git
 cd kr260_demo
+./00_runme_first.sh
 ```
 Note: 
-- edit the `set_wrenv_2509.sh` script to match your VxWorks installation path
-- edit the `create_kr260_a53.sh` file to match your target and tftp IDs
-
+- edit the `project_params.sh` script to match your VxWorks installation path, IP addresses, etc
 
 ### 2) Set up the environment variables for VxWorks
 
-After editing `set_wrenv_25.09.sh` run it
+After editing `project_parameters` run the environment variable setup script
 ```
-. ../set_wrenv_2509.sh
+./01_set_wrenv.sh
 ```
 
  Alternately, run 
@@ -41,21 +35,21 @@ After editing `set_wrenv_25.09.sh` run it
 
 ### 3) Run the A53 creation script
 ```
-../create_zynqmp_a53.sh
+../02_create_zynqmp_a53.sh
 ```
 
 ### 4) Run the R5 creation script
 ```
-../create_zynqmp_r5.sh
+../03_create_zynqmp_r5.sh
 ```
 
 ### 5) Optional: import the VSB and VIP projects into Workbench. Import the VSBs first. 
 
 Import 4 projects: 
-- zynqmp_r5-vsb
-- zynqmp_r5-vip
-- zynqmp_a53-vsb
-- zynqmp_a53-vip
+- kr260_r5-vsb
+- kr260_r5-vip
+- kr260_a53-vsb
+- kr260_a53-vip
 
 In order to import in workbench do the following:
 ```
