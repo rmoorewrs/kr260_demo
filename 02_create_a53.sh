@@ -10,7 +10,7 @@ if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<instal
 export SUB_PROJECT_NAME=${PROJECT_NAME}_a53
 export PATCH_FILE=${SUB_PROJECT_NAME}_dts.patch
 export BSP_NAME=${BSP_NAME_A53}
-export DTS_FILE=$(DTS_FILE_A53)
+export DTS_FILE=${DTS_FILE_A53}
 
 # set 'build' as project workspace
 mkdir -p build
@@ -60,7 +60,7 @@ cat << EOF > $1
          {
 -        bootargs = "gem(0,0)host:vxWorks h=192.168.1.2 e=192.168.1.6:ffffff00 g=192.168.1.1 u=target pw=vxTarget";
 -        stdout-path = "serial0";
-+        bootargs = "gem(0,0)host:vxWorks h=$SERVER_IP e=$TARGET_IP:$NETMASKHEX g=$GATEWAY_IP u=target pw=vxTarget";
++        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${TARGET_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=target pw=vxTarget";
 +        stdout-path = "serial0";
          };
      };
