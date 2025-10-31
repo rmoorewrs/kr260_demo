@@ -1,16 +1,18 @@
 #!/bin/sh
 
 # edit your site and project specifics in the project_params.sh file
-source project_params.sh
+source $(pwd)/project_params.sh
 
 # check that this is a valid VxWorks dev shell
 if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<install_dir\>/wrenv.sh -p vxworks/${VXWORKS_VERSION} first";return -1; else echo "VxWorks Release $WIND_RELEASE_ID detected"; fi
 
-export PATCH_FILE=${PROJECT_NAME}_a53_dts.patch
-export SUB_PROJECDT_NAME=${PROJECT_NAME}_a53
+
+export SUB_PROJECT_NAME=${PROJECT_NAME}_a53
+export PATCH_FILE=${SUB_PROJECT_NAME}_dts.patch
+export BSP_NAME=${BSP_NAME_A53}
 
 # set current directory as workspace
-export MY_WS_DIR=$(pwd)
+export MY_WS_DIR=$(pwd)/ws
 
 # set project names
 export VSB_NAME=${SUB_PROJECT_NAME}-vsb
@@ -50,12 +52,14 @@ EOF
 }
 
 
+# cd into the workspace directory
+cd ${MY_WS_DIR}
+echo $pwd
+
 # build the VSB
 vxprj vsb create -lp64 -bsp ${BSP_NAME} ${VSB_NAME} -force -S 
 cd ${VSB_NAME}
 vxprj vsb build -j
-
-
 
 # create, configure and build VIP
 cd $MY_WS_DIR
@@ -108,4 +112,4 @@ vxprj vip build
 cd $MY_WS_DIR
 
 echo Done. Remember to copy this to your tftpboot directory
-echo cp zynqmp_a53-vip/default/vxWorks.bin /tftpboot/vxWorks_a53.bin
+echo cp ${SUB_PROJECT_NAME}_a53-vip/default/vxWorks.bin /tftpboot/vxWorks_a53.bin

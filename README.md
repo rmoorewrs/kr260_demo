@@ -1,32 +1,42 @@
-# zcu102-demo
-vxworks demo script for zcu102
+# kr260-demo
+vxworks demo script for AMD Kria KR260 Starter Kit
 
 
 ## Prerequisites: 
-- Valid VxWorks installation
-- ZCU102 with u-boot
-- tftp server (option, only if you want to network boot from u-boot)
-- edit the set_wrenv_2403.sh or set_wrenv_2503.sh to match your installation
+- Valid VxWorks 25.09 installation
+- KR260 with u-boot in QSPI
+- FAT32 microSD card for automatic boot (withouth modifying QSPI)
+- tftp server
+- this git repo
+
+
+
 
 Note: to customize the IP addresses for your target and tftp server, edit the bootarg lines in the `generate_patch_file()` functions inside of the two create scripts
 
 ## Instructions:
 
-### 1) Change directory into the `ws` workspace
+### 1) Clone this project and enter worksapce
 
 ```
-cd zcu102-demo/ws
+git clone https://github.com/rmoorewrs/kr260_demo.git
+cd kr260_demo
 ```
+Note: 
+- edit the `set_wrenv_2509.sh` script to match your VxWorks installation path
+- edit the `create_kr260_a53.sh` file to match your target and tftp IDs
+
 
 ### 2) Set up the environment variables for VxWorks
 
+After editing `set_wrenv_25.09.sh` run it
 ```
-. ../set_wrenv_2503.sh
+. ../set_wrenv_2509.sh
 ```
 
  Alternately, run 
  ```
- <path-to-vxworks-install>/wrenv.sh -p vxworks/25.03     # use your path, your version
+ <path-to-vxworks-install>/wrenv.sh -p vxworks/25.09     # use your path, your version
  ```
 
 ### 3) Run the A53 creation script
