@@ -20,13 +20,14 @@ export MY_WS_DIR=$(pwd)/build
 export VSB_NAME=${SUB_PROJECT_NAME}-vsb
 export VIP_NAME=${SUB_PROJECT_NAME}-vip
 
+
 generate_patch_file()
 {
 
 cat << EOF > $1
 --- ${DTS_FILE}
-+++ dont-care.dts.modified
-@@ -17,25 +17,32 @@
++++ amd-zcu102-rev-1.1.dts
+@@ -17,24 +17,31 @@
  #include "zynqmp.dtsi"
  
  /   {
@@ -59,36 +60,34 @@ cat << EOF > $1
      chosen
          {
 -        bootargs = "gem(0,0)host:vxWorks h=192.168.1.2 e=192.168.1.6:ffffff00 g=192.168.1.1 u=target pw=vxTarget";
--        stdout-path = "serial0";
 +        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${TARGET_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=target pw=vxTarget";
-+        stdout-path = "serial0";
+         stdout-path = "serial0";
          };
      };
- 
-@@ -45,7 +52,7 @@
+@@ -45,9 +52,9 @@
      clock-frequency = <33330000>;
      };
  
 -&uart0
 +&uart1
      {
-     status = "okay";
+-    status = "okay";
++    status = "disabled";
      };
+ 
+ &pmu0
 @@ -61,16 +68,16 @@
      status = "okay";
      };
  
 -&gem3
--    {
--    status = "okay";
--    phy-handle = <&phy3>;
--
--    phy3: ethernet-phy@c
 +&gem1
-+    {
-+    status = "okay";
+     {
+     status = "okay";
+-    phy-handle = <&phy3>;
 +    phy-handle = <&phy1>;
-+
+ 
+-    phy3: ethernet-phy@c
 +    phy1: ethernet-phy@c
          {
          compatible = "tiDpPhy";
@@ -101,7 +100,6 @@ cat << EOF > $1
 EOF
 
 }
-
 
 # cd into the workspace directory
 cd ${MY_WS_DIR}

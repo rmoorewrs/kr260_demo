@@ -20,12 +20,22 @@ export MY_WS_DIR=$(pwd)/build
 export VSB_NAME=${SUB_PROJECT_NAME}-vsb
 export VIP_NAME=${SUB_PROJECT_NAME}-vip
 
+
 generate_patch_file()
 {
 
 cat << EOF > $1
 --- ${DTS_FILE}
-+++ dontcare.dts.modified
++++ ${DTS_FILE}
+@@ -21,7 +21,7 @@
+ 
+     aliases
+         {
+-        serial0 = &uart0;
++        serial0 = &uart1;
+         ethernet3 = &gem3;
+         };
+ 
 @@ -30,10 +30,18 @@
          device_type = "memory";
          reg = <0x78000000 0x08000000>;
@@ -45,6 +55,17 @@ cat << EOF > $1
 +        bootargs = "gem(0,0)host:vxWorks h=${SERVER_IP} e=${TARGET_IP}:${NETMASKHEX} g=${GATEWAY_IP} u=a pw=a";
          stdout-path = "serial0";
          };
+     };
+@@ -60,7 +68,7 @@
+         };
+     };
+ 
+-&uart0
++&uart1
+     {
+     status = "okay";
+     };
+
 EOF
 
 }

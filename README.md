@@ -1,13 +1,32 @@
-# kr260-demo
-vxworks demo script for AMD Kria KR260 Starter Kit
+# VxWorks demo scripts AMD Kria KR260 Starter Kit
+Rich Moore (richard.moore at windriver.com)
 
+This is a set of scripts that will build VxWorks projects that can be loaded on an AMD Kria KR260 starter kit. 
 
 ## Prerequisites: 
-- Valid VxWorks 25.09 installation
-- KR260 with u-boot in QSPI
+- Valid VxWorks 25.09 installation and active license
+- KR260 with u-boot in QSPI (assuming factory default version)
 - FAT32 microSD card for automatic boot (withouth modifying QSPI)
 - tftp server
 - this git repo
+
+## Use Cases
+There are 3 use cases covered here, each of which has different DTS file settings. Use case 2 below is the default created by the A53 and R5 scripts (i.e. the scripts patch the DTS files).  
+
+Case 1 requires DTS modification to activate UART1 on the A53. Case 3 has its own script and creates its own VIP project. 
+
+### Case 1 - A53 cores only
+The A53 DTS file should have UART1 and GEM1 (Ethernet) in an "okay" state for the DTS file in the A53 VIP project. The R5 image won't be loaded, so its configuration doesn't matter here. 
+
+### Case 2 - A53 and R5 cores together
+In this case, GEM1 is assigned to the A53 cores and UART1 is assigned to the R5 core. You can access the A53 target shell via telnet. A `generic FDT device` is created in the DTS to allow shared memory between the cores.
+
+### Case 3 - R5 core only
+In this case, both UART1 and GEM1 are "okay" in R5's DTS file. The A53 image won't be loaded so its configuration doesn't matter. 
+
+> Note: the DTS files (e.g. `amd-zcu102-rev-1.1.dts`) are located in the VxWorks Image Project (VIP) under the BSP directory, e.g. `amd_zynqmp_3_0_1_2`
+
+---
 
 ## Instructions:
 
@@ -18,7 +37,7 @@ git clone https://github.com/rmoorewrs/kr260_demo.git
 cd kr260_demo
 ./00_runme_first.sh
 ```
-Note: 
+>Note: 
 - edit the `project_params.sh` script to match your VxWorks installation path, IP addresses, etc
 
 ### 2) Set up the environment variables for VxWorks
@@ -33,17 +52,27 @@ After editing `project_parameters` run the environment variable setup script
  <path-to-vxworks-install>/wrenv.sh -p vxworks/25.09     # use your path, your version
  ```
 
-### 3) Run the A53 creation script
+### 3) Run the A53 creation script (Case 2)
 ```
-../02_create_zynqmp_a53.sh
+./02_create_a53.sh
 ```
+This script patches the A53 DTS file to add the generic memory device, enable Ethernet on the A53 and disable UART on the A53. If you want to run the A53 cores alone (i.e. no R5) then you need to **edit the DTS file to enable the UART for the A53 cores.**  
 
-### 4) Run the R5 creation script
+### 4) Run the R5 creation script (Case 2)
 ```
-../03_create_zynqmp_r5.sh
+./03_create_r5.sh
 ```
+This script will patch the R5 DTS file to add the generic memory device, enable UART and disable Ethernet. 
 
-### 5) Optional: import the VSB and VIP projects into Workbench. Import the VSBs first. 
+### 5) Case 3, R5 core by itself
+```
+./99_create_r5_only_eth_vip.sh
+```
+This script patches the R5 DTS file to enable Ethernet and UART
+
+>Note: this script only uses one of the two R5 cores. Enabling the second R5 core will require an extension of this same methodology. 
+
+### 6) Optional: import the VSB and VIP projects into Workbench. 
 
 Import 4 projects: 
 - kr260_r5-vsb
@@ -51,9 +80,13 @@ Import 4 projects:
 - kr260_a53-vsb
 - kr260_a53-vip
 
-In order to import in workbench do the following:
+In order to import in workbench do the following (best practice to import the VSBs first):
 ```
 File->Import->VxWorks->VxWorks VSB
+Select the VSB project
+
+File->Import->VxWorks->VxWorks VIP
+Select the VIP project
 ```
 
 ### 6) Booting both cores from u-boot (both kernels have built-in DTB)
@@ -65,16 +98,19 @@ zynqmp tcminit split; cpu 4 release 78100000 split; go 100000
 ```
 
 ### 7) Booting only on A53 Core from u-boot
-with separate kernel and DTB
+Remember to edit the A53 DTS file in the VIP project. Change the status of `UART1` from "disabled" to "okay" then build the VIP again. 
+```
+    status = "disabled";
+
+    to
+
+    status = "okay";
+```
+
+To boot with built-in DTB (default created by the scripts)
 ```
 tftpboot 0x100000 vxWorks_a53.bin
-tftpboot 0x0f000000 xlnx-zcu102-rev-1.1.dtb
-bootm 0x100000 - 0x0f000000
-```
-with built-in DTB
-```
-tftpboot 0x100000 vxWorks_a53.bin
-bootm 0x100000 - 0x0f000000
+go 0x100000
 ```
 
 ### 8) Booting only on R5 Core with Ethernet NIC from u-boot
@@ -82,3 +118,19 @@ bootm 0x100000 - 0x0f000000
 tftpboot 0x78100000 vxWorks_r5_eth.bin
 zynqmp tcminit split;cpu 4 release 78100000 split; cpu 0 disable
 ```
+
+## Making edit->build->test easier
+If you've imported the projects into Workbench, you can add a command to the `.wrmakefile` in the VIP that will automatically copy the `vxWorks.bin` file to your tftp server. 
+
+First, open `.wrmakefile` in the VxWorks Image Project directory.
+
+Search for `deploy_output` in `.wrmakefile` and add your OS copy commands. Note that the extra copy commands will persist only as long as you do `Build Project` in Workbench. If you do a `Rebuild Project` they'll be wiped out, since `.wrmakefile` gets refreshed.
+
+```
+# entry point for deploying output after the build
+deploy_output ::
+	@echo "deploy_output"
+	cp default/vxWorks.bin /tftpboot/vxWorks_a53.bin
+```
+
+
