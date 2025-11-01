@@ -139,11 +139,54 @@ deploy_output ::
 	@echo "deploy_output"
 	cp default/vxWorks.bin /tftpboot/vxWorks_a53.bin
 ```
+---
 
 ## Making the KR260 boot automatically without altering the QSPI contents.
 The KR260 is hardwired to boot from QSPI (as far as I can tell) so to change the boot behavior, you either have to rebuild/reprogram the QSPI u-boot program or environment. The alternative is to leave the factory QSPI u-boot as is, and provide a `boot.scr.uimg` file on a FAT32 formatted microSD card. 
 
 See the instructions in the `boot` directory README.md file
+
+---
+
+## Working with the FDT Generic Driver
+
+The FDT Generic Driver is a simplistic driver template that's useful for memory mapping. In this case we're using it for 
+
+In order to add the FDT Template driver you have to do it with vxprj like this:
+```
+vxprj vip component add DRV_TEMPLATE_FDT_MAP
+```
+
+Commands to work with the FDT Generic Driver
+```
+vxbDevShow() // shows info for all vxBus Devices
+fdtGenericDevShow()  // shows info about the memory location etc
+vmContextShow()
+```
+
+on R5 dump memory with physical address
+```
+fdtGenericDevShow
+d 0x76000000
+```
+
+on A53 dump memory with virtual address
+```
+fdtGenericDevShow
+d 0xffff800002940000
+```
+NOTE: You must run `fdtGenericDevShow` in order to get the correct virtual address
+
+write some data into shared memory on the R5 and dump on the A53 side
+```
+on R5: sprintf( 0x76000000, "This is a test.", 15)
+on R5: sprintf( 0x76000000, "foo bar baz xxx", 15)
+on A53: d 0xffff800002930000
+
+on A53: sprintf(0xffff800002930000, "xxxxxxxxxxxxxxx",15)
+on R5: d 0x76000000
+```
+
 
 
 
