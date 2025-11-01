@@ -1,5 +1,5 @@
 # VxWorks demo scripts AMD Kria KR260 Starter Kit
-Rich Moore (richard.moore at windriver.com)
+Rich Moore (rmoorewrs at gmail.com)
 
 This is a set of scripts that will build VxWorks projects that can be loaded on an AMD Kria KR260 starter kit. 
 
