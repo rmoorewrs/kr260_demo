@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# edit your site and project specifics in the project_params.sh file
-source $(pwd)/project_params.sh
+# make sure and run 01_set_wrenv.sh before running this script
 
 # check that this is a valid VxWorks dev shell
 if [ -z "$WIND_RELEASE_ID" ]; then echo "WR Dev Shell Not detected, run \<install_dir\>/wrenv.sh -p vxworks/${VXWORKS_VERSION} first";return -1; else echo "VxWorks Release $WIND_RELEASE_ID detected"; fi
