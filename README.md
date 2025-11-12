@@ -12,9 +12,10 @@ This is a set of scripts that will build VxWorks projects that can be loaded on 
 - this git repo
 
 ## Use Cases
-There are 3 use cases covered here, each of which has different DTS file settings and boot commands. Use case 1 below is the default created by the A53 and R5 scripts (i.e. the scripts patch the DTS files).  
-
-Case 2 requires DTS modification to activate UART1 on the A53. Case 3 has its own script and creates its own VIP project. 
+There are 3 use cases covered here, each of which has different DTS file settings and boot commands. 
+- Case 1, both cores running VxWorks, is the default created by the 02 (A53) and 03 (R5) scripts. 
+- Case 2, only the A53 core, requires DTS modification to activate UART1 on the A53.
+- Case 3, only the R5 core with etherne, uses the previous R5 VSB but its own VIP project. 
 
 ### Case 1 - A53 and R5 cores together (default)
 In this case, GEM1 (Eternet) is assigned to the A53 cores and UART1 (serial) is assigned to the R5 core. You can access the A53 target shell via telnet. A `generic FDT device` is created in the DTS to allow shared memory between the cores. Search for `vxbFdtMap` in the VxWorks docs for more details. 
