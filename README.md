@@ -33,7 +33,7 @@ There are 3 use cases covered here, each of which has different DTS file setting
 - Case 3, only the R5 core with etherne, uses the previous R5 VSB but its own VIP project. 
 
 ### Case 1 - A53 and R5 cores together (default)
-In this case, GEM1 (lower right RJ45 Ethernet port) is assigned to the A53 cores and UART1 (serial) is assigned to the R5 core. You can access the A53 target shell via telnet. A `generic FDT device` is created in the DTS to allow shared memory between the cores. Search for `vxbFdtMap` in the VxWorks docs for more details. 
+In this case, GEM1 (lower right RJ45 Ethernet port) is assigned to the A53 cores and UART1 (serial) is assigned to the R5 core. You can access the A53 target shell via telnet. A `generic FDT device` is created in the DTS to allow shared memory between the cores. See Appendix 4 below for more details and search for `vxbFdtMap` in the VxWorks docs. 
 
 ### Case 2 - A53 cores only 
 The A53 DTS file should have UART1 and GEM1 (Ethernet) in an "okay" state for the DTS file in the A53 VIP project. The R5 image won't be loaded, so its configuration doesn't matter here. 
@@ -182,9 +182,9 @@ See the instructions in the `boot` directory README.md file
 
 ## Appendix 4: Working with the FDT Generic Driver
 
-The FDT Generic Driver is a simplistic driver template that's useful for memory mapping. In this case we're using it for 
+The FDT Generic Driver is a simplistic driver template that's useful for memory mapping. In this case we're using it to provide shared memory between the A53 and R5 cores. 
 
-In order to add the FDT Template driver you have to do it with vxprj like this:
+In order to add the FDT Template driver you have to do it with vxprj like this (the script does this for you):
 ```
 vxprj vip component add DRV_TEMPLATE_FDT_MAP
 ```
@@ -202,7 +202,7 @@ fdtGenericDevShow
 d 0x76000000
 ```
 
-on A53 dump memory with virtual address
+on A53 dump memory with virtual address (your actual address may vary)
 ```
 fdtGenericDevShow
 d 0xffff800002940000
