@@ -33,7 +33,7 @@ There are 3 use cases covered here, each of which has different DTS file setting
 - Case 3, only the R5 core with etherne, uses the previous R5 VSB but its own VIP project. 
 
 ### Case 1 - A53 and R5 cores together (default)
-In this case, GEM1 (Eternet) is assigned to the A53 cores and UART1 (serial) is assigned to the R5 core. You can access the A53 target shell via telnet. A `generic FDT device` is created in the DTS to allow shared memory between the cores. Search for `vxbFdtMap` in the VxWorks docs for more details. 
+In this case, GEM1 (lower right RJ45 Ethernet port) is assigned to the A53 cores and UART1 (serial) is assigned to the R5 core. You can access the A53 target shell via telnet. A `generic FDT device` is created in the DTS to allow shared memory between the cores. Search for `vxbFdtMap` in the VxWorks docs for more details. 
 
 ### Case 2 - A53 cores only 
 The A53 DTS file should have UART1 and GEM1 (Ethernet) in an "okay" state for the DTS file in the A53 VIP project. The R5 image won't be loaded, so its configuration doesn't matter here. 
