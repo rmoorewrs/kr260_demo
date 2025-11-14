@@ -1,7 +1,7 @@
 # VxWorks demo scripts AMD Kria KR260 Starter Kit
 Rich Moore (rmoorewrs at gmail.com)
 
-This is a set of scripts that will build VxWorks projects that can be loaded on an AMD Kria KR260 starter kit. 
+This is a set of scripts that will build VxWorks projects that can be loaded on an AMD Kria KR260 starter kit. Both the A53 application cores and one of the R5 realtime cores is supported. 
 
 ## Prerequisites: 
 - Valid VxWorks 25.09 installation and active license
