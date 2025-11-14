@@ -8,8 +8,23 @@ This is a set of scripts that will build VxWorks projects that can be loaded on 
 - KR260 with u-boot in QSPI (assuming factory default version)
 - FAT32 microSD card for automatic boot (withouth modifying QSPI)
 - tftp server
-- git tools for your Host OS or the zip file from GitHub
-- this git repo
+- this git repo (via git tools for your Host OS or the zip file from GitHub)
+
+---
+
+## Connections
+#### UART
+- The serial terminal is connected via the USB Micro connector labeled `JTAG/UART` next to the SFP connector on the KR260
+- 4 serial ports will show show up on your host OS (e.g. /dev/ttyUSB0-USB3)
+- select the second port (e.g. /dev/ttyUSB1) and configure your terminal for `115200,n,8,1` no flow control 
+
+#### Ethernet
+- Connect to the lower right port as you face the side of the SBC
+    - the two left ports are for the FPGA fabric
+    - the upper right port uses an SGMII PHY that the ZCU102 BSP doesn't support OOB
+![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/kr260-ethernet.jpg)
+
+---
 
 ## Use Cases
 There are 3 use cases covered here, each of which has different DTS file settings and boot commands. 
