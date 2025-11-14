@@ -86,7 +86,7 @@ This script patches the A53 DTS file to add the generic memory device, enable Et
 This script will patch the R5 DTS file to add the generic memory device, enable UART and disable Ethernet. 
 
 
-### Step 5) Optional: Case 2, A53 cores by themselves
+## Step 5) Optional: Case 2, A53 cores by themselves
 Remember to edit the A53 DTS file in the VIP project. Change the status of `UART1` from "disabled" to "okay" then build the VIP again. 
 ```
     status = "disabled";
@@ -109,7 +109,7 @@ This script patches the R5 DTS file to enable Ethernet and UART
 >Note: these script only use one of the two R5 cores. Enabling the second R5 core will require an extension of the R5 Board Support Package 
 
 
-### Step 7) Optional: import the VSB and VIP projects into Workbench. 
+## Step 7) Optional: import the VSB and VIP projects into Workbench. 
 Open Workbench and select the `build` directory as the workspace. It will be empty initially, so you must import these projects:
 - kr260_r5-vsb
 - kr260_r5-vip
@@ -157,10 +157,11 @@ zynqmp tcminit split;cpu 4 release 78100000 split; cpu 0 disable
 
 ---
 
-## Appendix 2: Making edit->build->test easier
+## Appendix 2: Set up automatic copy of VxWorks images (makes edit->build->test cycle easier)
 If you've imported the projects into Workbench, you can add a command to the `.wrmakefile` in the VIP that will automatically copy the `vxWorks.bin` file to your tftp server. 
 
 First, open `.wrmakefile` in the VxWorks Image Project directory.
+- On Linux hosts, hit `ctrl-H` in file browser to reveal hidden files
 
 Search for `deploy_output` in `.wrmakefile` and add your OS copy commands. Note that the extra copy commands will persist only as long as you do `Build Project` in Workbench. If you do a `Rebuild Project` they'll be wiped out, since `.wrmakefile` gets refreshed.
 
