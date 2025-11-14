@@ -57,7 +57,7 @@ cd kr260_demo
 ```
 
 ## Step 2) Edit the Setup Script for your Host OS
-Edit the `01_setup_wrenv` script for your Host OS (Windows or Linux) to match your VxWorks installation and Desired IP settings
+Edit the `01_setup_wrenv` script for your Host OS (Windows or Linux) to match your VxWorks installation and Desired IP settings. After setting up this environment script and running it, all subsequent scripts must run in this shell. If you open a new shell, run the script first before doing other operations. 
 
 ### Linux Users: 
 - edit the file `01_setup_wrenv.sh`
