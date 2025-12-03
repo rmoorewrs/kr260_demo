@@ -104,22 +104,43 @@ EOF
 cd ${MY_WS_DIR}
 echo $pwd
 
+###############
+# VSB
+###############
 # build the VSB
 vxprj vsb create -lp64 -bsp ${BSP_NAME} ${VSB_NAME} -force -S 
+
+# comment out these lines if you don't want benchmarks
+vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS=y -add _WRS_CONFIG_BENCHMARKS_RTOS_BENCHMARK=y
+vxprj vsb add BENCHMARK
+vxprj vsb add GOOGLETEST
+vxprj vsb add BENCHMARKS_RTOS_BENCHMARK
+vxprj vsb add BENCHMARKS
+vxprj vsb add IPNET_SSH
+vxprj vsb add IPERF3
+
+
+
 cd ${VSB_NAME}
 vxprj vsb build -j
 
+###############
+# VIP
+###############
 # create, configure and build VIP
 cd $MY_WS_DIR
 vxprj vip create -vsb $VSB_NAME ${BSP_NAME} llvm -profile PROFILE_DEVELOPMENT $VIP_NAME
 cd $MY_WS_DIR/$VIP_NAME
 vxprj bundle add BUNDLE_STANDALONE_SHELL
+vxprj vip component add $VIP_NAME INCLUDE_STANDALONE_SYM_TBL
+vxprj vip component add $VIP_NAME INCLUDE_RTP
+vxprj vip component add $VIP_NAME INCLUDE_TIMER_SYS_SHOW
 vxprj vip component add $VIP_NAME INCLUDE_GETOPT 
 vxprj vip component add $VIP_NAME INCLUDE_STANDALONE_DTB
-vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT_START
 vxprj vip component add $VIP_NAME INCLUDE_IPWRAP_IFCONFIG
 vxprj vip component add $VIP_NAME INCLUDE_IFCONFIG
 vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet '"${TARGET_IP}"'/'"${NETMASKCIDR}"'","gateway '"${GATEWAY_IP}"'"'
+vxprj vip component add $VIP_NAME INCLUDE_IPATTACH
 vxprj vip component add $VIP_NAME INCLUDE_PING
 vxprj vip component add $VIP_NAME INCLUDE_IPPING_CMD
 vxprj vip component add $VIP_NAME INCLUDE_IPTELNETS
@@ -129,6 +150,10 @@ vxprj vip component add $VIP_NAME INCLUDE_IPROUTE_CMD
 vxprj vip component add $VIP_NAME INCLUDE_VXBUS_SHOW
 vxprj vip component add $VIP_NAME DRV_TEMPLATE_FDT_MAP
 vxprj vip component add $VIP_NAME DRV_QSPI_FDT_ZYNQMP
+
+# Benchmark: select only one of POSIX or NONPOSIX (VxWorks native) 
+vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_NONPOSIX
+# vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_POSIX
 
 # Filesystem
 vxprj vip component add $VIP_NAME INCLUDE_SD_BUS
@@ -142,6 +167,7 @@ vxprj vip component add $VIP_NAME INCLUDE_DOSFS_PRTMSG_LEVEL
 vxprj vip component add $VIP_NAME INCLUDE_DOSFS_MAIN
 
 # Debug
+vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT_START
 vxprj vip component add $VIP_NAME INCLUDE_ANALYSIS_AGENT
 vxprj vip component add $VIP_NAME INCLUDE_ANALYSIS_DEBUG_SUPPORT
 vxprj vip component add $VIP_NAME INCLUDE_DEBUG_AGENT INCLUDE_DEBUG_AGENT_START 
