@@ -111,13 +111,12 @@ echo $pwd
 vxprj vsb create -lp64 -bsp ${BSP_NAME} ${VSB_NAME} -force -S 
 
 # comment out these lines if you don't want benchmarks
-vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS=y -add _WRS_CONFIG_BENCHMARKS_RTOS_BENCHMARK=y
-vxprj vsb add BENCHMARK
-vxprj vsb add GOOGLETEST
-vxprj vsb add BENCHMARKS_RTOS_BENCHMARK
-vxprj vsb add BENCHMARKS
-vxprj vsb add IPNET_SSH
-vxprj vsb add IPERF3
+vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS=y 
+vxprj vsb config -s -add _WRS_CONFIG_BENCHMARK=y
+vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS_RTOS_BENCHMARK=y
+vxprj vsb config -s -add _WRS_CONFIG_GOOGLETEST=y
+vxprj vsb config -s -add _WRS_CONFIG_IPNET_SSH=y
+vxprj vsb config -s -add _WRS_CONFIG_IPERF3=y
 
 
 
