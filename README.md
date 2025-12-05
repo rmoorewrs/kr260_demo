@@ -219,6 +219,98 @@ on A53: sprintf(0xffff800002930000, "xxxxxxxxxxxxxxx",15)
 on R5: d 0x76000000
 ```
 
+## Appendix 5: Running the RTOS Benchmark
+
+VxWorks comes with several benchmarks, this one is the RTOS benchmark from the Zephyr Project here: https://github.com/zephyrproject-rtos/rtos-benchmark/tree/main
+
+The scripts will include the benchmark code unless you comment it out. To check that the benchmark was built properly, look in the VSB directory in 
+
+```
+[path/to/kr260_demo]/build/kr260_a53-vsb/usr/root/llvm/bin
+```
+
+and verify that a file called `rtos_benchmark_non_posix.vxe` is there. 
+
+Next, open the project in Workbench 
+- right-click on VIP project line in the project explorer window
+- select `New->Wind River Workbench Project` in the context menu
+- select `ROMFS File System` from the project list
+- type a name like `romfs` or similar for the project (name doesn't matter)
 
 
+![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/01-new-project.png)
+![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/02-romfs-project.png)
+![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/03-romfs-proj-name.png)
 
+
+Next a ROMFS configuration tool will open in the center window. 
+- click on `Add External` and navigate to the location of the file(s) 
+- after that you should see the VxWorks executable or `VXE` file in the right pane. 
+
+![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/04_add_external.png)
+![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/05-vxe-added.png)
+
+The VIP project should look like this:
+
+![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/06-romfs-in-proj-explorer.png)
+
+
+Now when you build your VIP project, it will include the `rtos_benchmark_non_posix.vxe` which will be located in `/romfs/rtos_benchmark_non_posix.vxe` on the target. 
+
+### How to run the benchmark
+Once you have the `VXE` file in the `/romfs/` directory on the target, you can run the benchmark like this:
+
+```
+-> rtosBenchmarkRun
+```
+
+>Note: the shell will come back immediately, but the test results will take a few moments to fully print out. They'll look something like this:
+
+```
+rtosBenchmarkRun
+
+->
+
+Rtos-benchmark Testing for non-POSIX APIs:
+Platform information:
+AMD KR260
+VxWorks (for AMD KR260) version SMP 64-bit
+Kernel: Core Kernel version: 3.2.4.0
+Made on Dec  5 2025 12:25:18
+value = -140737405943808 = 0xffff800004e98000
+-> 
+System Configurations:
+    - System tick clock frequency: 60 Hz
+    - Task CPU affinity on core: 1
+    - Main task priority: 50
+    - POSIX high-res clock timer resolution: 16666666 ns
+        - Timer frequency from clock_gettime(): 1000000000 Hz
+
+ *** Starting! ***
+
+** Thread stats [avg, min, max] in nanoseconds **
+ Spawn (no context switch)               :  66666,      0, 16666667
+ Create (no context switch)              :  16666,      0, 16666667
+ Start  (no context switch)              :      0,      0,      0
+ Suspend (no context switch)             :      0,      0,      0
+ Resume (no context switch)              :      0,      0,      0
+ Spawn (context switch)                  : 18446299981642884,      0, 18446744073692884950
+ Start  (context switch)                 : 18446294877009551,      0, 18446744073692884950
+ Suspend (context switch)                : 449197166666,      0, 5104500000000
+ Resume (context switch)                 : 18446294877009551,      0, 18446744073692884950
+ Terminate (context switch)              : 449197166666,      0, 5104500000000
+** Mutex Stats [avg, min, max] in nanoseconds **
+ Lock (no owner)                         :      0,      0,      0
+ Unlock (no waiters)                     :      0,      0,      0
+ Recursive lock                          :      0,      0,      0
+ Recursive unlock                        :      0,      0,      0
+ Unlock with unpend (no context switch)  :      0,      0,      0
+ Unlock with unpend (context switch)     : 18446744073542884,      0, 18446744073692884949
+ Pend (no priority inheritance)          : 5105433333,      0, 5105066666666
+ Pend (priority inheritance)             : 1116666,      0, 18446744073692884950
+** Semaphore stats [avg, min, max] in nanoseconds **
+ Take (context switch)                   : 1654622349999,      0, 5106866666666
+ Give (context switch)                   : 18445089451359551,      0, 18446744073692884949
+** Semaphore stats [avg, min, max] in nanoseconds **
+ Give (no context switch)                :      0,      0,      0
+```

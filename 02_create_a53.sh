@@ -109,6 +109,7 @@ echo $pwd
 ###############
 # build the VSB
 vxprj vsb create -lp64 -bsp ${BSP_NAME} ${VSB_NAME} -force -S 
+cd ${VSB_NAME}
 
 # comment out these lines if you don't want benchmarks
 vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS=y 
@@ -118,9 +119,7 @@ vxprj vsb config -s -add _WRS_CONFIG_GOOGLETEST=y
 vxprj vsb config -s -add _WRS_CONFIG_IPNET_SSH=y
 vxprj vsb config -s -add _WRS_CONFIG_IPERF3=y
 
-
-
-cd ${VSB_NAME}
+# build the VSB
 vxprj vsb build -j
 
 ###############
