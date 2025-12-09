@@ -1,0 +1,174 @@
+/* zynqmp-r5.dtsi - AMD Zynq UltraScale+ MPSoC Cortex-R5 device tree source */
+
+/*
+ * Copyright (c) 2016-2017, 2019, 2021, 2024 Wind River Systems, Inc.
+ *
+ * This file is licensed under the Creative Commons CC0 1.0 Universal Public
+ * Domain Dedication License (CC0-1.0). You may obtain a copy of the License
+ * at:
+ *     https://creativecommons.org/publicdomain/zero/1.0/
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ */
+
+#include "prjParams.h"
+
+/   {
+    compatible = "amd,zynq-ultrascale-mpsoc";
+    #address-cells = <1>;
+    #size-cells = <1>;
+    interrupt-parent = <&intc>;
+
+    cpus
+        {
+        #size-cells = <0>;
+        #address-cells = <1>;
+
+        cpu@0
+            {
+            device_type = "cpu";
+            reg = <0>;
+            };
+        };
+
+    soczynqmp:soc
+        {
+        compatible = "simple-bus";
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        intc: interrupt-controller@f9000000
+            {
+            compatible = "arm,gic";
+            interrupt-controller;
+            #interrupt-cells = <3>;
+            reg = <0xf9000000 0x1000>,
+                  <0xf9001000 0x1000>;
+            max-int-lvl = <160>;
+            };
+            
+#include "zynqmp-clock.dtsi"
+#include "zynqmp-iomux.dtsi"
+        
+        csu:csu@ffca0000
+            {
+            compatible = "amd,zynqmp-csu";
+            reg = <0xffca0000 0x6000>;
+            };
+
+        pmu_global:pmu_global@ffd80000
+            {
+            compatible = "amd,zynq-pmu-global";
+            reg = <0xffd80000 0x1000>;
+            }; 
+
+        ttc_0: timer@ff110000
+            {
+            compatible = "amd,zynq-ttc";
+            reg = <0xff110000 0x1000>;
+            clocks = <&lpd_lsbus_div_clk>;
+            clock-frequency = <100000000>;
+            reg-max-count = <0xffffffff>;
+            interrupt-parent = <&intc>;
+            interrupts = <68 0 0x104
+                          69 0 0x104
+                          70 0 0x104>;
+            };
+
+        ttc_1: timer@ff120000
+            {
+            compatible = "amd,zynq-ttc";
+            reg = <0xff120000 0x1000>;
+            clocks = <&lpd_lsbus_div_clk>;
+            clock-frequency = <100000000>;
+            reg-max-count = <0xffffffff>;
+            interrupt-parent = <&intc>;
+            interrupts = <71 0 0x104
+                          72 0 0x104
+                          73 0 0x104>;
+            };
+
+        uart0: serial@ff000000
+            {
+            compatible = "amd,xuartps";
+            status = "disabled";
+            reg = <0xff000000 0x1000>;
+            clocks = <&uart0_ref_div_clk>;
+            clock-frequency = <100000000>;
+            interrupts = <53 0 0x104>;
+            interrupt-parent = <&intc>;
+            };
+
+        uart1: serial@ff010000
+            {
+            compatible = "amd,xuartps";
+            status = "disabled";
+            reg = <0xff010000 0x1000>;
+            clocks = <&uart1_ref_div_clk>;
+            clock-frequency = <100000000>;
+            interrupts = <54 0 0x104>;
+            interrupt-parent = <&intc>;
+            };
+
+         gem0: ethernet@ff0b0000
+             {
+             #size-cells = <0>;
+             #address-cells = <1>;
+             compatible = "amd,gem";
+             status = "disabled";
+             reg = <0xff0b0000 0x1000>;
+             bus-width = <64>;
+#ifdef AMD_ZYNQ_END_BD_RX_NUM
+            rx-bd-num = <AMD_ZYNQ_END_BD_RX_NUM>;
+#endif /* AMD_ZYNQ_END_BD_RX_NUM */
+#ifdef AMD_ZYNQ_END_BD_TX_NUM
+            tx-bd-num = <AMD_ZYNQ_END_BD_TX_NUM>;
+#endif /* AMD_ZYNQ_END_BD_TX_NUM */
+             local-mac-address = [ 00 0A 35 11 22 30 ];
+             clocks = <&gem0_ref_div_clk>;
+             interrupts = <89 0 0x104>;
+             interrupt-parent = <&intc>;
+             };
+
+        gem1: ethernet@ff0c0000
+            {
+            #size-cells = <0>;
+            #address-cells = <1>;
+            compatible = "amd,zynqmp-gem", "cdns,zynqmp-gem", "cdns,gem";
+            reg = <0x0 0xff0c0000 0x0 0x1000>;
+            clocks = <&gem1_ref_div_clk>;
+            bus-width = <64>;
+#ifdef AMD_ZYNQ_END_BD_RX_NUM
+            rx-bd-num = <AMD_ZYNQ_END_BD_RX_NUM>;
+#endif /* AMD_ZYNQ_END_BD_RX_NUM */
+#ifdef AMD_ZYNQ_END_BD_TX_NUM
+            tx-bd-num = <AMD_ZYNQ_END_BD_TX_NUM>;
+#endif /* AMD_ZYNQ_END_BD_TX_NUM */
+            local-mac-address = [ 00 0A 35 11 22 34 ];
+            interrupts = <91 0 4>;
+            interrupt-parent = <&intc>;
+            status = "disabled";        /* set "okay" to enable access */
+            };
+
+         gem3: ethernet@ff0e0000
+             {
+             #size-cells = <0>;
+             #address-cells = <1>;
+             compatible = "amd,gem";
+             status = "disabled";
+             reg = <0xff0e0000 0x1000>;
+             bus-width = <64>;
+#ifdef AMD_ZYNQ_END_BD_RX_NUM
+            rx-bd-num = <AMD_ZYNQ_END_BD_RX_NUM>;
+#endif /* AMD_ZYNQ_END_BD_RX_NUM */
+#ifdef AMD_ZYNQ_END_BD_TX_NUM
+            tx-bd-num = <AMD_ZYNQ_END_BD_TX_NUM>;
+#endif /* AMD_ZYNQ_END_BD_TX_NUM */
+             local-mac-address = [ 00 0A 35 11 22 33 ];
+             clocks = <&gem3_ref_div_clk>;
+             interrupts = <95 0 0x104>;
+             interrupt-parent = <&intc>;
+             };
+         }; /* end soc */
+    };

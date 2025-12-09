@@ -1,0 +1,91 @@
+/* amd-zcu102-r5-rev-1.1.dts - AMD ZynqMP ZCU102 Rev 1.1 Cortex-R5 device tree source */
+
+/*
+ * Copyright (c) 2018-2019, 2021, 2024-2025 Wind River Systems, Inc.
+ *
+ * This file is licensed under the Creative Commons CC0 1.0 Universal Public
+ * Domain Dedication License (CC0-1.0). You may obtain a copy of the License
+ * at:
+ *     https://creativecommons.org/publicdomain/zero/1.0/
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ */
+
+/dts-v1/;
+
+#include "kr260-r5.dtsi"
+
+/ {
+    model = "AMD ZynqMP ZCU102 Cortex-R5";
+
+    aliases
+        {
+        serial0 = &uart1;
+        };
+
+    memory@78000000
+        {
+        device_type = "memory";
+        reg = <0x78000000 0x08000000>;
+        };
+        
+        
+    generic_dev@0x76000000
+       {
+       compatible = "fdt,generic-dev";
+       reg = <0x76000000 0x02000000>;
+       status = "okay";
+       };
+
+    chosen
+        {
+        bootargs = "gem(0,0)host:vxWorks h=192.168.12.51 e=192.168.12.33:ffffff00 g=192.168.12.1 u=a pw=a";
+        stdout-path = "serial0";
+        };
+    };
+
+&ps_ref_clk
+     {
+     clock-frequency = <33330000>;
+     };
+
+&gem3
+    {
+    status = "okay";
+    phy-handle = <&phy3>;
+
+    phy3: ethernet-phy@c
+        {
+        compatible = "tiDpPhy";
+
+        reg = <0x0c>;
+        rgmii-delay = <0x3>;
+        rx-internal-delay = <0x8>;
+        tx-internal-delay = <0xa>;
+        fifo-depth = <0x1>;
+        };
+    };
+    
+&gem1
+    {
+    status = "okay";
+    phy-handle = <&phy1>;
+
+    phy1: ethernet-phy@c
+        {
+        compatible = "tiDpPhy";
+
+        reg = <0x08>;
+        rgmii-delay = <0x3>;
+        rx-internal-delay = <0x8>;
+        tx-internal-delay = <0xa>;
+        fifo-depth = <0x1>;
+        };
+    };
+
+&uart1
+    {
+    status = "okay";
+    };
+

@@ -8,9 +8,11 @@ rem Project settings
 set PROJECT_NAME=kr260
 set BSP_NAME_A53=amd_zynqmp_3_0_1_2
 set BSP_NAME_R5=amd_zynqmp_r5_2_0_5_1
-set DTS_FILE_A53=amd-zcu102-rev-1.1.dts
-set DTS_FILE_R5=amd-zcu102-r5-rev-1.1.dts
-set DTSI_FILE_R5=zynq-r5.dtsi
+set DTS_FILE_A53=kr260-a53.dts
+set DTS_FILE_R5=kr260-r5.dts
+set DTSI_FILE_R5=kr260-r5.dtsi
+set DTS_FILE_R5_ETH=kr260-r5-eth.dts
+set DTSI_FILE_R5_ETH=kr260-r5-eth.dtsi
 
 
 # set this section for your target network

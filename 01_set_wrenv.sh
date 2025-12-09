@@ -8,10 +8,11 @@ export VXWORKS_VERSION=25.09
 export PROJECT_NAME=kr260
 export BSP_NAME_A53=amd_zynqmp_3_0_1_2
 export BSP_NAME_R5=amd_zynqmp_r5_2_0_5_1
-export DTS_FILE_A53=amd-zcu102-rev-1.1.dts
-export DTS_FILE_R5=amd-zcu102-r5-rev-1.1.dts
-export DTSI_FILE_R5=zynq-r5.dtsi
-
+export DTS_FILE_A53=kr260-a53.dts
+export DTS_FILE_R5=kr260-r5.dts
+export DTSI_FILE_R5=kr260-r5.dtsi
+export DTS_FILE_R5_ETH=kr260-r5-eth.dts
+export DTSI_FILE_R5_ETH=kr260-r5-eth.dtsi
 
 # set this section for your target network
 export TARGET_IP=192.168.12.32

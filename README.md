@@ -132,6 +132,15 @@ Select the VIP project
 ## Appendix 1: Booting the KR260 in the different use cases
 ---
 
+If you interrupt the automatic u-boot script, remember to set the ip parameters. For example
+```
+ZynqMP> setenv serverip 192.168.12.51
+ZynqMP> setenv ipaddr 192.168.12.33
+ZynqMP> setenv ipgateway 192.168.12.1
+ZynqMP> setenv netmask 255.255.255.0
+
+```
+
 ### Case 1: Booting both cores from u-boot (both kernels have built-in DTB)
 ```
 tftpboot 0x100000 vxWorks_a53.bin
@@ -264,7 +273,7 @@ Once you have the `VXE` file in the `/romfs/` directory on the target, you can r
 -> rtosBenchmarkRun
 ```
 
->Note: the shell will come back immediately, but the test results will take a few moments to fully print out. They'll look something like this:
+>Note: the shell will come back immediately, but the test results will take a few moments to fully print out. They'll look something like this:bb
 
 ```
 rtosBenchmarkRun
