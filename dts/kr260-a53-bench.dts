@@ -1,0 +1,231 @@
+/* amd-zcu102-rev1.1.dts - AMD ZCU102 Evaluation Kit Rev 1.1 device tree source */
+
+/*
+ * Copyright (c) 2018-2021, 2024 Wind River Systems, Inc.
+ *
+ * This file is licensed under the Creative Commons CC0 1.0 Universal Public
+ * Domain Dedication License (CC0-1.0). You may obtain a copy of the License
+ * at:
+ *     https://creativecommons.org/publicdomain/zero/1.0/
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ */
+
+ /*
+  *  This version gives the UART and Ethernet to the A53 cores for benchmark purposes (no network)
+  */
+
+/dts-v1/;
+
+#include "zynqmp.dtsi"
+
+/   {
+    model = "AMD KR260-A53";
+
+    aliases
+        {
+        serial0 = &uart1;
+        ethernet0 = &gem0;
+        };
+
+    memory@0
+        {
+        device_type = "memory";
+        reg = <0x0 0x00000000 0x0 0x76000000>,
+              <0x8 0x00000000 0x0 0x80000000>;
+        };
+
+    generic_dev@0x76000000
+        {
+        compatible = "fdt,generic-dev";
+        reg = <0x0 0x76000000 0x0 0x02000000>;
+        status = "okay";
+        };
+
+    chosen
+        {
+        bootargs = "gem(0,0)host:vxWorks h=192.168.12.51 e=192.168.12.32:ffffff00 g=192.168.12.1 u=target pw=vxTarget";
+        stdout-path = "serial0";
+        };
+    };
+
+
+&ps_ref_clk
+    {
+    clock-frequency = <33330000>;
+    };
+
+&uart1
+    {
+    status = "okay";
+    };
+
+&pmu0
+    {
+    status = "okay";
+    };
+
+&rtc
+    {
+    calibration = <0x7ffc>;
+    status = "okay";
+    };
+
+&gem1
+    {
+    status = "okay";
+    phy-handle = <&phy1>;
+
+    phy1: ethernet-phy@c
+        {
+        compatible = "tiDpPhy";
+
+        reg = <0x08>;
+        rgmii-delay = <0x3>;
+        rx-internal-delay = <0x8>;
+        tx-internal-delay = <0xa>;
+        fifo-depth = <0x1>;
+        };
+    };
+
+&i2c1
+    {
+    status = "okay";
+    pca9548@74
+        {
+        compatible = "nxp,pca9548";
+        reg = <0x74>;
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        i2c@0
+            {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            reg = <0x0>;
+
+            eeprom@54
+                {
+                compatible = "at24, at24c08";
+                reg = <0x54>;
+                data-scl-frequency = <400000>;
+                };
+            };
+        };
+    };
+
+&gpio
+    {
+    status = "okay";
+    };
+
+&pcie
+    {
+    status = "okay";
+    };
+
+&sdhc1
+    {
+    status = "okay";
+    };
+
+&qspi0_mux
+    {
+    pin-set = <
+    0 0x02ffffff    /* QSPI Clock */
+    1 0x02ffffff    /* QSPI Databus */
+    2 0x02ffffff    /* QSPI Databus */
+    3 0x02ffffff    /* QSPI Databus */
+    4 0x02ffffff    /* QSPI Databus */
+    5 0x02ffffff    /* QSPI Slave Select */
+    6 0x02ffffff    /* QSPI Clock to be fed-back */
+    7 0x02ffffff    /* QSPI Slave Select upper */
+    8 0x02ffffff    /* QSPI Upper Databus */
+    9 0x02ffffff    /* QSPI Upper Databus */
+    10 0x02ffffff   /* QSPI Upper Databus */
+    11 0x02ffffff   /* QSPI Upper Databus */
+    12 0x02ffffff   /* QSPI Upper Clock */
+    >;
+    };
+
+&qspi0
+    {
+    status = "okay";
+
+    spiflash@0
+        {
+        compatible = "spiflash";
+        reg = <0>;
+
+        /*
+         * mode |= 0x80, two or more SPI devices are connected in
+         * parallel, only verified two flashes connected in parallel
+         */
+
+        mode = <0x180>;
+        chip-number = <2>;
+        data-lines = <4>;
+
+        /*
+         * Note:
+         * spi-max-frequency is used to configure the flash running
+         * frequency.
+         */
+
+        spi-max-frequency = <64000000>;
+        };
+    };
+
+&lpd_dma
+    {
+    status = "okay";
+    };
+
+&fpd_dma
+    {
+    status = "okay";
+    };
+
+&sata
+    {
+    status = "okay";
+    /* SATA OOB timing settings */
+    ceva,p0-cominit-params = <0x28184018>;
+    ceva,p0-comwake-params = <0x0e081406>;
+    ceva,p0-burst-params   = <0x064a0813>;
+    ceva,p0-retry-params   = <0x3ffc96a4>;
+    ceva,p1-cominit-params = <0x28184d1b>;
+    ceva,p1-comwake-params = <0x0e081906>;
+    ceva,p1-burst-params   = <0x064a0813>;
+    ceva,p1-retry-params   = <0x3ffc96a4>;
+    };
+
+&usb0
+    {
+    status = "okay";
+    dr_mode = "host";
+    };
+
+&can1_mux
+    {
+    pin-set = <
+    24 0x20ffffff
+    25 0x20ffffff
+    >;
+    };
+
+&can0
+    {
+    /*
+     * zynqmp has 2 CAN controllers, but the zcu102 evaluation board
+     * only has 1 CAN transceiver, which is connected to controller
+     * can1. Make can0 disabled by default.
+     */
+    status = "disabled";
+    };
+
+&can1
+    {
+    status = "okay";
+    };
