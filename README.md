@@ -134,11 +134,10 @@ Select the VIP project
 
 If you interrupt the automatic u-boot script, remember to set the ip parameters. For example
 ```
-ZynqMP> setenv serverip 192.168.12.51
-ZynqMP> setenv ipaddr 192.168.12.33
-ZynqMP> setenv ipgateway 192.168.12.1
-ZynqMP> setenv netmask 255.255.255.0
-
+setenv serverip 192.168.12.51
+setenv ipaddr 192.168.12.33
+setenv ipgateway 192.168.12.1
+setenv netmask 255.255.255.0
 ```
 
 ### Case 1: Booting both cores from u-boot (both kernels have built-in DTB)
