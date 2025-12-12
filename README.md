@@ -245,7 +245,7 @@ vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_NONPOSIX
 #vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_POSIX
 ```
 
-Check that the 
+Check that the RTOS Benchmark VXE file was built by looking in:
 ```
 [path/to/kr260_demo]/build/kr260_a53-vsb/usr/root/llvm/bin
 ```
@@ -278,8 +278,17 @@ The VIP project should look like this:
 
 ![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/06-romfs-in-proj-explorer.png)
 
-
 Now when you build your VIP project, it will include the `rtos_benchmark_non_posix.vxe` which will be located in `/romfs/rtos_benchmark_non_posix.vxe` on the target. 
+
+
+### How to boot the benchmark image
+Note that the benchmark image on the A53 doesn't have networking enabled for the sake of the benchmark.  
+
+To boot A53 cores with the benchmark built-in DTB (default created by the scripts)
+```
+tftpboot 0x100000 vxWorks_a53_bench.bin
+go 0x100000
+```
 
 ### How to run the benchmark
 Depending on the VIP configuration, the benchmark may run automatically on bootup. Otherwise, to run it manually:
