@@ -37,8 +37,6 @@ vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS=y
 vxprj vsb config -s -add _WRS_CONFIG_BENCHMARK=y
 vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS_RTOS_BENCHMARK=y
 vxprj vsb config -s -add _WRS_CONFIG_GOOGLETEST=y
-vxprj vsb config -s -add _WRS_CONFIG_IPNET_SSH=y
-# vxprj vsb config -s -add _WRS_CONFIG_IPERF3=y
 
 # build the VSB
 vxprj vsb build -j
@@ -56,26 +54,13 @@ vxprj vip component add $VIP_NAME INCLUDE_RTP
 vxprj vip component add $VIP_NAME INCLUDE_TIMER_SYS_SHOW
 vxprj vip component add $VIP_NAME INCLUDE_GETOPT 
 vxprj vip component add $VIP_NAME INCLUDE_STANDALONE_DTB
-
-# according to the RTOS benchmark doc, network 
-# should be turned off for meaningful results
-#vxprj vip component add $VIP_NAME INCLUDE_IPWRAP_IFCONFIG
-#vxprj vip component add $VIP_NAME INCLUDE_IFCONFIG
-#vxprj vip parameter set $VIP_NAME IFCONFIG_1 '"ifname gem0","devname gem","inet '"${TARGET_IP}"'/'"${NETMASKCIDR}"'","gateway '"${GATEWAY_IP}"'"'
-#vxprj vip component add $VIP_NAME INCLUDE_IPATTACH
-#vxprj vip component add $VIP_NAME INCLUDE_PING
-#vxprj vip component add $VIP_NAME INCLUDE_IPPING_CMD
-#vxprj vip component add $VIP_NAME INCLUDE_IPTELNETS
-#vxprj vip component add $VIP_NAME INCLUDE_ROUTECMD
-#vxprj vip component add $VIP_NAME INCLUDE_IPROUTE_CMD
-
 vxprj vip component add $VIP_NAME INCLUDE_VXBUS_SHOW
 vxprj vip component add $VIP_NAME DRV_TEMPLATE_FDT_MAP
 vxprj vip component add $VIP_NAME DRV_QSPI_FDT_ZYNQMP
 
 # Benchmark: select only one of POSIX or NONPOSIX (VxWorks native) 
-# vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_NONPOSIX
-vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_POSIX
+vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_NONPOSIX
+#vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_POSIX
 vxprj vip parameter set HIGH_RES_POSIX_CLOCK TRUE
 vxprj vip parameter set HIGH_RES_CLOCK64_LONG_ROLLOVER TRUE
 vxprj vip parameter setstring POSIX_CLOCK_TIMER "armGenTimer"

@@ -229,22 +229,38 @@ on R5: d 0x76000000
 
 ## Appendix 5: Running the RTOS Benchmark
 
-VxWorks comes with several benchmarks, this one is the RTOS benchmark from the Zephyr Project here: https://github.com/zephyrproject-rtos/rtos-benchmark/tree/main
+VxWorks includes a benchmark that's part of the Zephyr Project: https://github.com/zephyrproject-rtos/rtos-benchmark/tree/main
 
-The scripts will include the benchmark code unless you comment it out. To check that the benchmark was built properly, look in the VSB directory in 
+The Benchmark instructions say to run the benchmark without the network in order to get meaningful results. Therefore an extra script has been added to build the properly configured image for the benchmark. In order to build the benchmark, cd into the top-level `kr260_demo` folder, and run script 4:
 
+```
+cd path/to/kr260_demo
+./01_set_wrenv.sh
+./04_create_a53_bench.sh
+```
+
+Note that there are two possible benchmarks: a non-POSIX version (using native VxWorks APIs) and the POSIX version (using POSIX APIs). You can select which one by uncommenting only one of these lines:
+```
+vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_NONPOSIX
+#vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_POSIX
+```
+
+Check that the 
 ```
 [path/to/kr260_demo]/build/kr260_a53-vsb/usr/root/llvm/bin
 ```
 
-and verify that a file called `rtos_benchmark_non_posix.vxe` is there. 
+and verify that a file called `rtos_benchmark_non_posix.vxe` or `rtos_benchmark_posix.vxe` is there. 
 
-Next, open the project in Workbench 
+Next, open the workspace in Workbench and import the Benchmark versions of the A53 VSB and VIP projects. 
+
+#### Create a ROMFS project and add the RTOS Benchmark VXE file(s)
+With Workbench open and the benchmark projects imported, do the following:
 - right-click on VIP project line in the project explorer window
 - select `New->Wind River Workbench Project` in the context menu
 - select `ROMFS File System` from the project list
 - type a name like `romfs` or similar for the project (name doesn't matter)
-
+> Note: if the ROMFS project isn't included in the `kr260_a53_bench` VIP project, then drag and drop the ROMFS project into the VIP project and build. 
 
 ![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/01-new-project.png)
 ![](https://github.com/rmoorewrs/kr260_demo/blob/main/pics/02-romfs-project.png)
@@ -266,59 +282,69 @@ The VIP project should look like this:
 Now when you build your VIP project, it will include the `rtos_benchmark_non_posix.vxe` which will be located in `/romfs/rtos_benchmark_non_posix.vxe` on the target. 
 
 ### How to run the benchmark
-Once you have the `VXE` file in the `/romfs/` directory on the target, you can run the benchmark like this:
-
+Depending on the VIP configuration, the benchmark may run automatically on bootup. Otherwise, to run it manually:
 ```
+-> lkup "rtos"
 -> rtosBenchmarkRun
 ```
 
->Note: the shell will come back immediately, but the test results will take a few moments to fully print out. They'll look something like this:bb
+The results will look something like this:
 
 ```
-rtosBenchmarkRun
-
-->
-
 Rtos-benchmark Testing for non-POSIX APIs:
 Platform information:
-AMD KR260
-VxWorks (for AMD KR260) version SMP 64-bit
+-> AMD KR260-A53
+VxWorks (for AMD KR260-A53) version SMP 64-bit
 Kernel: Core Kernel version: 3.2.4.0
-Made on Dec  5 2025 12:25:18
-value = -140737405943808 = 0xffff800004e98000
--> 
+Made on Dec 11 2025 16:18:40
+
 System Configurations:
-    - System tick clock frequency: 60 Hz
+    - System tick clock frequency: 1000 Hz
     - Task CPU affinity on core: 1
     - Main task priority: 50
-    - POSIX high-res clock timer resolution: 16666666 ns
+    - POSIX high-res clock timer resolution: 11 ns
         - Timer frequency from clock_gettime(): 1000000000 Hz
 
  *** Starting! ***
 
 ** Thread stats [avg, min, max] in nanoseconds **
- Spawn (no context switch)               :  66666,      0, 16666667
- Create (no context switch)              :  16666,      0, 16666667
- Start  (no context switch)              :      0,      0,      0
- Suspend (no context switch)             :      0,      0,      0
- Resume (no context switch)              :      0,      0,      0
- Spawn (context switch)                  : 18446299981642884,      0, 18446744073692884950
- Start  (context switch)                 : 18446294877009551,      0, 18446744073692884950
- Suspend (context switch)                : 449197166666,      0, 5104500000000
- Resume (context switch)                 : 18446294877009551,      0, 18446744073692884950
- Terminate (context switch)              : 449197166666,      0, 5104500000000
+ Spawn (no context switch)               :  39100,  35773,  83009
+ Create (no context switch)              :  36348,  35103,  77808
+ Start  (no context switch)              :   1700,   1600,   3230
+ Suspend (no context switch)             :   1774,   1690,   3530
+ Resume (no context switch)              :   1453,   1410,   1581
+ Spawn (context switch)                  :  39686,  36284, 126963
+ Start  (context switch)                 :   2578,   2351,   4260
+ Suspend (context switch)                :   2498,   2340,   4291
+ Resume (context switch)                 :   1909,   1800,   2410
+ Terminate (context switch)              :  52766,  51855,  57475
 ** Mutex Stats [avg, min, max] in nanoseconds **
- Lock (no owner)                         :      0,      0,      0
- Unlock (no waiters)                     :      0,      0,      0
- Recursive lock                          :      0,      0,      0
- Recursive unlock                        :      0,      0,      0
- Unlock with unpend (no context switch)  :      0,      0,      0
- Unlock with unpend (context switch)     : 18446744073542884,      0, 18446744073692884949
- Pend (no priority inheritance)          : 5105433333,      0, 5105066666666
- Pend (priority inheritance)             : 1116666,      0, 18446744073692884950
+ Lock (no owner)                         :    810,    810,   1150
+ Unlock (no waiters)                     :    820,    820,    970
+ Recursive lock                          :    820,    820,    840
+ Recursive unlock                        :    790,    790,    830
+ Unlock with unpend (no context switch)  :   2282,   2170,   4660
+ Unlock with unpend (context switch)     :   3017,   2831,   5351
+ Pend (no priority inheritance)          :   3462,   3230,   5721
+ Pend (priority inheritance)             :   3838,   3590,   5501
 ** Semaphore stats [avg, min, max] in nanoseconds **
- Take (context switch)                   : 1654622349999,      0, 5106866666666
- Give (context switch)                   : 18445089451359551,      0, 18446744073692884949
+ Take (context switch)                   :   2595,   2440,   4761
+ Give (context switch)                   :   2057,   1960,   2661
 ** Semaphore stats [avg, min, max] in nanoseconds **
- Give (no context switch)                :      0,      0,      0
+ Give (no context switch)                :    790,    790,    961
+ Take (no context switch)                :    780,    780,   1071
+** Yield stats [avg, min, max] in nanoseconds **
+ Yield (no context switch)               :   1343,   1270,   3080
+ Yield (context switch)                  :   1561,   1491,   3450
+** Allocation stats [avg, min, max] in nanoseconds **
+ Malloc                                  :    902,    880,   8161
+ Free                                    :   1571,   1560,   2620
+** Message queue stats [avg, min, max] in nanoseconds **
+ Create                                  :   2516,   2390,   9961
+ Send (no context switch)                :   2099,   2050,   5670
+ Receive (no context switch)             :   2020,   1960,   3631
+ Send (context switch)                   :   3596,   3450,   6071
+ Receive (context switch)                :   3567,   3380,   6350
+
+ *** Done! ***
 ```

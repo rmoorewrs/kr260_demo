@@ -30,14 +30,6 @@ echo $pwd
 vxprj vsb create -lp64 -bsp ${BSP_NAME} ${VSB_NAME} -force -S 
 cd ${VSB_NAME}
 
-# comment out these lines if you don't want benchmarks
-vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS=y 
-vxprj vsb config -s -add _WRS_CONFIG_BENCHMARK=y
-vxprj vsb config -s -add _WRS_CONFIG_BENCHMARKS_RTOS_BENCHMARK=y
-vxprj vsb config -s -add _WRS_CONFIG_GOOGLETEST=y
-vxprj vsb config -s -add _WRS_CONFIG_IPNET_SSH=y
-vxprj vsb config -s -add _WRS_CONFIG_IPERF3=y
-
 # build the VSB
 vxprj vsb build -j
 
@@ -63,14 +55,9 @@ vxprj vip component add $VIP_NAME INCLUDE_IPPING_CMD
 vxprj vip component add $VIP_NAME INCLUDE_IPTELNETS
 vxprj vip component add $VIP_NAME INCLUDE_ROUTECMD
 vxprj vip component add $VIP_NAME INCLUDE_IPROUTE_CMD
-
 vxprj vip component add $VIP_NAME INCLUDE_VXBUS_SHOW
 vxprj vip component add $VIP_NAME DRV_TEMPLATE_FDT_MAP
 vxprj vip component add $VIP_NAME DRV_QSPI_FDT_ZYNQMP
-
-# Benchmark: select only one of POSIX or NONPOSIX (VxWorks native) 
-vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_NONPOSIX
-# vxprj vip component add $VIP_NAME INCLUDE_RTOS_BENCHMARK_POSIX
 
 # Filesystem
 vxprj vip component add $VIP_NAME INCLUDE_SD_BUS
